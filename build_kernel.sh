@@ -11,6 +11,6 @@ export ANDROID_MAJOR_VERSION=u
 export LLVM=1
 export DEPMOD=depmod
 export ARCH=arm64
-export TARGET_SOC=s5e3830
-make exynos850-xcover5xx_defconfig
+export TARGET_SOC=s5e9830
+make exynos9830-y2s_defconfig
 make

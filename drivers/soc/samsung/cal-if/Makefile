@@ -12,6 +12,7 @@ cmupmucal-$(CONFIG_PMUCAL)			+= pmucal_system.o pmucal_local.o pmucal_cpu.o pmuc
 cmupmucal-$(CONFIG_CP_PMUCAL)	+= pmucal_cp.o
 cmupmucal-$(CONFIG_GNSS_PMUCAL)	+= pmucal_gnss.o
 cmupmucal-$(CONFIG_SHUB_PMUCAL)	+= pmucal_shub.o
+cmupmucal-$(CONFIG_SOC_EXYNOS9830)	+= exynos9830/cal_data.o
 cmupmucal-$(CONFIG_SOC_S5E3830)	+= s5e3830/cal_data.o
 cmupmucal-$(CONFIG_ACPM_DVFS)	+= acpm_dvfs.o fvmap.o
 #obj-$(CONFIG_CMUCAL)			+= cmucal.o ra.o vclk.o pll_spec.o

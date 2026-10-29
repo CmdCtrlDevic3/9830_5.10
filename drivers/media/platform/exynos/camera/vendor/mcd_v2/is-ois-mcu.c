@@ -31,7 +31,9 @@
 #include <linux/regulator/consumer.h>
 #include <linux/delay.h>
 #include <linux/file.h>
+#if IS_ENABLED(CONFIG_EXYNOS_PMU_IF)
 #include <soc/samsung/exynos-pmu-if.h>
+#else
 #if defined(CONFIG_USE_OIS_TAMODE_CONTROL)
 #include <linux/power_supply.h>
 #endif

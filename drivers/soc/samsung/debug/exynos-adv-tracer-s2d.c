@@ -17,7 +17,9 @@
 
 #include <soc/samsung/debug-snapshot.h>
 #include <soc/samsung/exynos-adv-tracer-ipc.h>
+#if IS_ENABLED(CONFIG_EXYNOS_PMU_IF)
 #include <soc/samsung/exynos-pmu-if.h>
+#endif
 #include <soc/samsung/exynos-cpupm.h>
 
 enum s2d_ipc_cmd {

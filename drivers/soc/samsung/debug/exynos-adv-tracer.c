@@ -21,7 +21,9 @@
 
 #include <soc/samsung/debug-snapshot.h>
 #include <soc/samsung/exynos-adv-tracer-ipc.h>
+#if IS_ENABLED(CONFIG_EXYNOS_PMU_IF)
 #include <soc/samsung/exynos-pmu-if.h>
+#endif
 
 static struct adv_tracer_info *exynos_ati;
 static struct adv_tracer_ipc_main *adv_tracer_ipc;

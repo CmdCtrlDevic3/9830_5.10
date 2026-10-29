@@ -15,7 +15,9 @@
 #include <linux/vmalloc.h>
 #include <linux/firmware.h>
 #include <linux/delay.h>
+#if IS_ENABLED(CONFIG_EXYNOS_PMU_IF)
 #include <soc/samsung/exynos-pmu-if.h>
+#else
 
 #include "is-sfr-ois-mcu-v1_1_1.h"
 #include "is-hw-api-ois-mcu.h"

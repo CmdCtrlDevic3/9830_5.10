@@ -30,7 +30,7 @@
 #include <asm/stackprotector.h>
 
 #include <soc/samsung/debug-snapshot.h>
-#if IS_ENABLED(CONFIG_SOC_S5E3830)
+#if IS_ENABLED(CONFIG_SOC_S5E3830) || IS_ENABLED(CONFIG_SOC_EXYNOS9830)
 #include <soc/samsung/exynos-pmu.h>
 #else
 #include <soc/samsung/exynos-pmu-if.h>

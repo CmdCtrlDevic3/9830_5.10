@@ -515,7 +515,7 @@ static inline void synchronize_rcu_expedited_queue_work(struct rcu_exp_work *rew
 {
 	INIT_WORK_ONSTACK(&rew->rew_work, wait_rcu_exp_gp);
 	queue_work(rcu_gp_wq, &rew->rew_work);
-	secdbg_dtsk_built_set_data(DTYPE_WORK, &rew.rew_work);
+	secdbg_dtsk_built_set_data(DTYPE_WORK, &rew->rew_work);
 }
 
 static inline void synchronize_rcu_expedited_destroy_work(struct rcu_exp_work *rew)

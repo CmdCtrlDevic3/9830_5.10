@@ -331,6 +331,7 @@ void adv_tracer_ipc_release_channel_by_name(const char *name)
 }
 EXPORT_SYMBOL(adv_tracer_ipc_release_channel_by_name);
 
+#ifdef CONFIG_SOC_S5E3830
 int adv_tracer_ipc_ramhold_ctrl(bool en, bool clear)
 {
 	struct adv_tracer_ipc_cmd cmd;
@@ -350,6 +351,7 @@ end:
 	return ret;
 }
 EXPORT_SYMBOL_GPL(adv_tracer_ipc_ramhold_ctrl);
+#endif
 
 int adv_tracer_ipc_request_channel(struct device_node *np,
 		ipc_callback handler,
@@ -412,21 +414,24 @@ static void adv_tracer_ipc_channel_clear(void)
 	adv_tracer_interrupt_gen(EAT_FRM_CHANNEL);
 }
 
-static void adv_tracer_ipc_callback(struct adv_tracer_ipc_cmd *cmd,
-		unsigned int len)
+static void adv_tracer_ipc_callback(struct adv_tracer_ipc_cmd *cmd, unsigned int len)
 {
 	switch(cmd->cmd_raw.cmd) {
 	case EAT_IPC_CMD_BOOT_DBGC:
-		dev_info(adv_tracer_ipc->dev, "DBGC Boot!(cnt:%d)\n", cmd->buffer[1]);
-		adv_tracer_ipc->exception_cnt--;
+		dev_emerg(adv_tracer_ipc->dev, "DBGC Boot!(cnt:%d)\n", cmd->buffer[1]);
+		adv_tracer_ipc->recovery = false;
 		break;
 	case EAT_IPC_CMD_EXCEPTION_DBGC:
 		dev_err(adv_tracer_ipc->dev,
 				"DBGC occurred exception! (SP: 0x%x, LR:0x%x, PC:0x%x)\n",
 				cmd->buffer[1], cmd->buffer[2], cmd->buffer[3]);
-		adv_tracer_ipc->exception_cnt++;
-		if (adv_tracer_ipc->exception_cnt >= 3)
-			dbg_snapshot_expire_watchdog();
+		if (adv_tracer_ipc->recovery)
+			panic("DBGC failed recovery!");
+		adv_tracer_ipc->recovery = true;
+		break;
+	case EAT_IPC_CMD_SEND_LOG:
+		dev_info(adv_tracer_ipc->dev, "DBGC outputs log [%x][%x][%x]\n",
+				cmd->buffer[1], cmd->buffer[2], cmd->buffer[3]);
 		break;
 	default:
 		break;
@@ -462,7 +467,7 @@ static int adv_tracer_ipc_channel_probe(void)
 	return 0;
 }
 
-static int adv_tracer_ipc_init(struct platform_device *pdev)
+int adv_tracer_ipc_init(struct platform_device *pdev)
 {
 	int ret = 0;
 

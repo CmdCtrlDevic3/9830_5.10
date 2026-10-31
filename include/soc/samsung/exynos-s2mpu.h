@@ -261,5 +261,16 @@ static inline unsigned long exynos_pd_restore_s2mpu(unsigned int pd)
 }
 #endif
 
+uint64_t exynos_set_dev_stage2_pcie_ap(const char *s2mpu_name,
+					uint32_t vid,
+					uint64_t base,
+					uint64_t size,
+					uint32_t ap);
+uint64_t exynos_set_dev_stage2_ap(const char *s2mpu_name,
+				  uint32_t vid,
+				  uint64_t base,
+				  uint64_t size,
+				  uint32_t ap);
+
 #endif	/* __ASSEMBLY__ */
 #endif	/* __EXYNOS_S2MPU_H__ */

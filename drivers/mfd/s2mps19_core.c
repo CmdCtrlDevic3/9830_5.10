@@ -56,7 +56,7 @@ int s2mps19_read_reg(struct i2c_client *i2c, u8 reg, u8 *dest)
 	int ret;
 
 	mutex_lock(&s2mps19->i2c_lock);
-	ret = exynos_acpm_read_reg(channel, i2c->addr, reg, dest);
+	ret = exynos_acpm_read_reg(acpm_mfd_node, channel, i2c->addr, reg, dest);
 	mutex_unlock(&s2mps19->i2c_lock);
 	if (ret) {
 		pr_err("[%s] acpm ipc fail!\n", __func__);
@@ -73,7 +73,7 @@ int s2mps19_bulk_read(struct i2c_client *i2c, u8 reg, int count, u8 *buf)
 	int ret;
 
 	mutex_lock(&s2mps19->i2c_lock);
-	ret = exynos_acpm_bulk_read(channel, i2c->addr, reg, count, buf);
+	ret = exynos_acpm_bulk_read(acpm_mfd_node, channel, i2c->addr, reg, count, buf);
 	mutex_unlock(&s2mps19->i2c_lock);
 	if (ret) {
 		pr_err("[%s] acpm ipc fail!\n", __func__);
@@ -90,7 +90,7 @@ int s2mps19_write_reg(struct i2c_client *i2c, u8 reg, u8 value)
 	int ret;
 
 	mutex_lock(&s2mps19->i2c_lock);
-	ret = exynos_acpm_write_reg(channel, i2c->addr, reg, value);
+	ret = exynos_acpm_write_reg(acpm_mfd_node, channel, i2c->addr, reg, value);
 	mutex_unlock(&s2mps19->i2c_lock);
 	if (ret) {
 		pr_err("[%s] acpm ipc fail!\n", __func__);
@@ -107,7 +107,7 @@ int s2mps19_bulk_write(struct i2c_client *i2c, u8 reg, int count, u8 *buf)
 	int ret;
 
 	mutex_lock(&s2mps19->i2c_lock);
-	ret = exynos_acpm_bulk_write(channel, i2c->addr, reg, count, buf);
+	ret = exynos_acpm_bulk_write(acpm_mfd_node, channel, i2c->addr, reg, count, buf);
 	mutex_unlock(&s2mps19->i2c_lock);
 	if (ret) {
 		pr_err("[%s] acpm ipc fail!\n", __func__);
@@ -124,7 +124,7 @@ int s2mps19_update_reg(struct i2c_client *i2c, u8 reg, u8 val, u8 mask)
 	int ret;
 
 	mutex_lock(&s2mps19->i2c_lock);
-	ret = exynos_acpm_update_reg(channel, i2c->addr, reg, val, mask);
+	ret = exynos_acpm_update_reg(acpm_mfd_node, channel, i2c->addr, reg, val, mask);
 	mutex_unlock(&s2mps19->i2c_lock);
 	if (ret) {
 		pr_err("[%s] acpm ipc fail!\n", __func__);
@@ -484,16 +484,16 @@ static int s2mps19_i2c_probe(struct i2c_client *i2c,
 		s2mps19->pmic_rev = reg_data & 0x07;
 	}
 
-	s2mps19->pmic = i2c_new_dummy(i2c->adapter, I2C_ADDR_PMIC);
-	s2mps19->rtc = i2c_new_dummy(i2c->adapter, I2C_ADDR_RTC);
-	s2mps19->debug_i2c = i2c_new_dummy(i2c->adapter, I2C_ADDR_DEBUG);
+	s2mps19->pmic = i2c_new_dummy_device(i2c->adapter, I2C_ADDR_PMIC);
+	s2mps19->rtc = i2c_new_dummy_device(i2c->adapter, I2C_ADDR_RTC);
+	s2mps19->debug_i2c = i2c_new_dummy_device(i2c->adapter, I2C_ADDR_DEBUG);
 
-	if (pdata->use_i2c_speedy) {
-		dev_err(s2mps19->dev, "use_i2c_speedy was true\n");
-		s2mps19->pmic->flags |= I2C_CLIENT_SPEEDY;
-		s2mps19->rtc->flags |= I2C_CLIENT_SPEEDY;
-		s2mps19->debug_i2c->flags |= I2C_CLIENT_SPEEDY;
-	}
+	// if (pdata->use_i2c_speedy) {
+	// 	dev_err(s2mps19->dev, "use_i2c_speedy was true\n");
+	// 	s2mps19->pmic->flags |= I2C_CLIENT_SPEEDY;
+	// 	s2mps19->rtc->flags |= I2C_CLIENT_SPEEDY;
+	// 	s2mps19->debug_i2c->flags |= I2C_CLIENT_SPEEDY;
+	// }
 
 	i2c_set_clientdata(s2mps19->pmic, s2mps19);
 	i2c_set_clientdata(s2mps19->rtc, s2mps19);

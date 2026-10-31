@@ -54,7 +54,7 @@ int s2mps22_read_reg(struct i2c_client *i2c, u8 reg, u8 *dest)
 	int ret;
 
 	mutex_lock(&s2mps22->i2c_lock);
-	ret = exynos_acpm_read_reg(channel, i2c->addr, reg, dest);
+	ret = exynos_acpm_read_reg(acpm_mfd_node, channel, i2c->addr, reg, dest);
 	mutex_unlock(&s2mps22->i2c_lock);
 	if (ret) {
 		pr_err("[%s] acpm ipc fail!\n", __func__);
@@ -71,7 +71,7 @@ int s2mps22_bulk_read(struct i2c_client *i2c, u8 reg, int count, u8 *buf)
 	int ret;
 
 	mutex_lock(&s2mps22->i2c_lock);
-	ret = exynos_acpm_bulk_read(channel, i2c->addr, reg, count, buf);
+	ret = exynos_acpm_bulk_read(acpm_mfd_node, channel, i2c->addr, reg, count, buf);
 	mutex_unlock(&s2mps22->i2c_lock);
 	if (ret) {
 		pr_err("[%s] acpm ipc fail!\n", __func__);
@@ -88,7 +88,7 @@ int s2mps22_write_reg(struct i2c_client *i2c, u8 reg, u8 value)
 	int ret;
 
 	mutex_lock(&s2mps22->i2c_lock);
-	ret = exynos_acpm_write_reg(channel, i2c->addr, reg, value);
+	ret = exynos_acpm_write_reg(acpm_mfd_node, channel, i2c->addr, reg, value);
 	mutex_unlock(&s2mps22->i2c_lock);
 	if (ret) {
 		pr_err("[%s] acpm ipc fail!\n", __func__);
@@ -105,7 +105,7 @@ int s2mps22_bulk_write(struct i2c_client *i2c, u8 reg, int count, u8 *buf)
 	int ret;
 
 	mutex_lock(&s2mps22->i2c_lock);
-	ret = exynos_acpm_bulk_write(channel, i2c->addr, reg, count, buf);
+	ret = exynos_acpm_bulk_write(acpm_mfd_node, channel, i2c->addr, reg, count, buf);
 	mutex_unlock(&s2mps22->i2c_lock);
 	if (ret) {
 		pr_err("[%s] acpm ipc fail!\n", __func__);
@@ -122,7 +122,7 @@ int s2mps22_update_reg(struct i2c_client *i2c, u8 reg, u8 val, u8 mask)
 	int ret;
 
 	mutex_lock(&s2mps22->i2c_lock);
-	ret = exynos_acpm_update_reg(channel, i2c->addr, reg, val, mask);
+	ret = exynos_acpm_update_reg(acpm_mfd_node, channel, i2c->addr, reg, val, mask);
 	mutex_unlock(&s2mps22->i2c_lock);
 	if (ret) {
 		pr_err("[%s] acpm ipc fail!\n", __func__);
@@ -364,14 +364,14 @@ static int s2mps22_i2c_probe(struct i2c_client *i2c,
 		s2mps22->pmic_rev = reg_data & 0x07;
 	}
 
-	s2mps22->pmic = i2c_new_dummy(i2c->adapter, I2C_ADDR_PMIC);
-	s2mps22->debug_i2c = i2c_new_dummy(i2c->adapter, I2C_ADDR_DEBUG);
+	s2mps22->pmic = i2c_new_dummy_device(i2c->adapter, I2C_ADDR_PMIC);
+	s2mps22->debug_i2c = i2c_new_dummy_device(i2c->adapter, I2C_ADDR_DEBUG);
 
-	if (pdata->use_i2c_speedy) {
-		dev_err(s2mps22->dev, "use_i2c_speedy was true\n");
-		s2mps22->pmic->flags |= I2C_CLIENT_SPEEDY;
-		s2mps22->debug_i2c->flags |= I2C_CLIENT_SPEEDY;
-	}
+	// if (pdata->use_i2c_speedy) {
+	// 	dev_err(s2mps22->dev, "use_i2c_speedy was true\n");
+	// 	s2mps22->pmic->flags |= I2C_CLIENT_SPEEDY;
+	// 	s2mps22->debug_i2c->flags |= I2C_CLIENT_SPEEDY;
+	// }
 
 	i2c_set_clientdata(s2mps22->pmic, s2mps22);
 	i2c_set_clientdata(s2mps22->debug_i2c, s2mps22);

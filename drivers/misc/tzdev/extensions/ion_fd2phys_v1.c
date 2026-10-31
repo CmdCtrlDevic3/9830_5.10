@@ -21,10 +21,10 @@
 #include <linux/fs.h>
 #include <linux/init.h>
 
-#if defined(CONFIG_ARCH_RANCHU)
-#include <linux/ion.h>
-#else
+#if defined(CONFIG_ION_FD2PHYS_USE_ION_FROM_STAGING)
 #include "../../../staging/android/ion/ion.h"
+#else
+#include <linux/ion.h>
 #endif
 
 #include <linux/kernel.h>

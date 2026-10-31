@@ -861,9 +861,8 @@ static int usb_notifier_probe(struct platform_device *pdev)
 
 static int usb_notifier_remove(struct platform_device *pdev)
 {
-#if IS_ENABLED(CONFIG_PDIC_NOTIFIER)
 	struct usb_notifier_platform_data *pdata = dev_get_platdata(&pdev->dev);
-
+#if IS_ENABLED(CONFIG_PDIC_NOTIFIER)
 #if IS_ENABLED(CONFIG_USB_TYPEC_MANAGER_NOTIFIER)
 	manager_notifier_unregister(&pdata->ccic_usb_nb);
 #else

@@ -27,6 +27,7 @@
 #include <linux/ion.h>
 #endif
 
+#include <linux/compat.h>
 #include <linux/kernel.h>
 #include <linux/mm.h>
 #include <linux/module.h>

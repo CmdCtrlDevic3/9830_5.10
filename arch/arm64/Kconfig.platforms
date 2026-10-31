@@ -326,4 +326,21 @@ config SOC_EXYNOS3830_ANDROID_VERSION_T
         help
           This enables support for Android version T of EXYNOS3830
 
+config SOC_EXYNOS9830
+	bool "Samsung EXYNOS9830"
+	select SOC_SAMSUNG
+	select ARCH_EXYNOS
+	select ARCH_HAS_CPUFREQ
+	select HAVE_S3C2410_I2C if I2C
+	select HAVE_S3C2410_WATCHDOG if WATCHDOG
+	select HAVE_S3C_RTC if RTC_CLASS
+	select ARCH_SUPPORTS_MSI
+	select ARM_AMBA
+	select CLKSRC_OF
+	select USE_OF
+	select COMMON_CLK_SAMSUNG
+	select CLKSRC_EXYNOS_MCT
+	select PINCTRL
+	select SAMSUNG_DMADEV
+
 endmenu

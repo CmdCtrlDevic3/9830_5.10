@@ -807,7 +807,7 @@ int is_hw_get_address(void *itfc_data, void *pdev_data, int hw_id)
 		}
 		itf_hwip->hw_ip->regs_start[REG_SETA] = mem_res->start;
 		itf_hwip->hw_ip->regs_end[REG_SETA] = mem_res->end;
-		itf_hwip->hw_ip->regs[REG_SETA] = ioremap_nocache(mem_res->start, resource_size(mem_res));
+		itf_hwip->hw_ip->regs[REG_SETA] = ioremap(mem_res->start, resource_size(mem_res));
 		if (!itf_hwip->hw_ip->regs[REG_SETA]) {
 			dev_err(&pdev->dev, "Failed to remap io region\n");
 			return -EINVAL;
@@ -828,7 +828,7 @@ int is_hw_get_address(void *itfc_data, void *pdev_data, int hw_id)
 
 		itf_hwip->hw_ip->regs_start[REG_EXT2] = mem_res->start;
 		itf_hwip->hw_ip->regs_end[REG_EXT2] = mem_res->end;
-		itf_hwip->hw_ip->regs[REG_EXT2] = ioremap_nocache(mem_res->start, resource_size(mem_res));
+		itf_hwip->hw_ip->regs[REG_EXT2] = ioremap(mem_res->start, resource_size(mem_res));
 		if (!itf_hwip->hw_ip->regs[REG_EXT2]) {
 			dev_err(&pdev->dev, "Failed to remap io region\n");
 			return -EINVAL;
@@ -848,7 +848,7 @@ int is_hw_get_address(void *itfc_data, void *pdev_data, int hw_id)
 
 		itf_hwip->hw_ip->regs_start[REG_EXT1] = mem_res->start;
 		itf_hwip->hw_ip->regs_end[REG_EXT1] = mem_res->end;
-		itf_hwip->hw_ip->regs[REG_EXT1] = ioremap_nocache(mem_res->start, resource_size(mem_res));
+		itf_hwip->hw_ip->regs[REG_EXT1] = ioremap(mem_res->start, resource_size(mem_res));
 		if (!itf_hwip->hw_ip->regs[REG_EXT1]) {
 			dev_err(&pdev->dev, "Failed to remap io region\n");
 			return -EINVAL;
@@ -866,7 +866,7 @@ int is_hw_get_address(void *itfc_data, void *pdev_data, int hw_id)
 		}
 		itf_hwip->hw_ip->regs_start[REG_SETA] = mem_res->start + LIC_CHAIN_OFFSET;
 		itf_hwip->hw_ip->regs_end[REG_SETA] = mem_res->end;
-		itf_hwip->hw_ip->regs[REG_SETA] = ioremap_nocache(mem_res->start, resource_size(mem_res));
+		itf_hwip->hw_ip->regs[REG_SETA] = ioremap(mem_res->start, resource_size(mem_res));
 		if (!itf_hwip->hw_ip->regs[REG_SETA]) {
 			dev_err(&pdev->dev, "Failed to remap io region\n");
 			return -EINVAL;
@@ -888,7 +888,7 @@ int is_hw_get_address(void *itfc_data, void *pdev_data, int hw_id)
 
 		itf_hwip->hw_ip->regs_start[REG_EXT2] = mem_res->start;
 		itf_hwip->hw_ip->regs_end[REG_EXT2] = mem_res->end;
-		itf_hwip->hw_ip->regs[REG_EXT2] = ioremap_nocache(mem_res->start, resource_size(mem_res));
+		itf_hwip->hw_ip->regs[REG_EXT2] = ioremap(mem_res->start, resource_size(mem_res));
 		if (!itf_hwip->hw_ip->regs[REG_EXT2]) {
 			dev_err(&pdev->dev, "Failed to remap io region\n");
 			return -EINVAL;
@@ -908,7 +908,7 @@ int is_hw_get_address(void *itfc_data, void *pdev_data, int hw_id)
 
 		itf_hwip->hw_ip->regs_start[REG_EXT1] = mem_res->start;
 		itf_hwip->hw_ip->regs_end[REG_EXT1] = mem_res->end;
-		itf_hwip->hw_ip->regs[REG_EXT1] = ioremap_nocache(mem_res->start, resource_size(mem_res));
+		itf_hwip->hw_ip->regs[REG_EXT1] = ioremap(mem_res->start, resource_size(mem_res));
 		if (!itf_hwip->hw_ip->regs[REG_EXT1]) {
 			dev_err(&pdev->dev, "Failed to remap io region\n");
 			return -EINVAL;
@@ -926,7 +926,7 @@ int is_hw_get_address(void *itfc_data, void *pdev_data, int hw_id)
 		}
 		itf_hwip->hw_ip->regs_start[REG_SETA] = mem_res->start + (2 * LIC_CHAIN_OFFSET);
 		itf_hwip->hw_ip->regs_end[REG_SETA] = mem_res->end;
-		itf_hwip->hw_ip->regs[REG_SETA] = ioremap_nocache(mem_res->start, resource_size(mem_res));
+		itf_hwip->hw_ip->regs[REG_SETA] = ioremap(mem_res->start, resource_size(mem_res));
 		if (!itf_hwip->hw_ip->regs[REG_SETA]) {
 			dev_err(&pdev->dev, "Failed to remap io region\n");
 			return -EINVAL;
@@ -948,7 +948,7 @@ int is_hw_get_address(void *itfc_data, void *pdev_data, int hw_id)
 
 		itf_hwip->hw_ip->regs_start[REG_EXT2] = mem_res->start;
 		itf_hwip->hw_ip->regs_end[REG_EXT2] = mem_res->end;
-		itf_hwip->hw_ip->regs[REG_EXT2] = ioremap_nocache(mem_res->start, resource_size(mem_res));
+		itf_hwip->hw_ip->regs[REG_EXT2] = ioremap(mem_res->start, resource_size(mem_res));
 		if (!itf_hwip->hw_ip->regs[REG_EXT2]) {
 			dev_err(&pdev->dev, "Failed to remap io region\n");
 			return -EINVAL;
@@ -968,7 +968,7 @@ int is_hw_get_address(void *itfc_data, void *pdev_data, int hw_id)
 
 		itf_hwip->hw_ip->regs_start[REG_EXT1] = mem_res->start;
 		itf_hwip->hw_ip->regs_end[REG_EXT1] = mem_res->end;
-		itf_hwip->hw_ip->regs[REG_EXT1] = ioremap_nocache(mem_res->start, resource_size(mem_res));
+		itf_hwip->hw_ip->regs[REG_EXT1] = ioremap(mem_res->start, resource_size(mem_res));
 		if (!itf_hwip->hw_ip->regs[REG_EXT1]) {
 			dev_err(&pdev->dev, "Failed to remap io region\n");
 			return -EINVAL;
@@ -987,7 +987,7 @@ int is_hw_get_address(void *itfc_data, void *pdev_data, int hw_id)
 
 		itf_hwip->hw_ip->regs_start[REG_SETA] = mem_res->start;
 		itf_hwip->hw_ip->regs_end[REG_SETA] = mem_res->end;
-		itf_hwip->hw_ip->regs[REG_SETA] = ioremap_nocache(mem_res->start, resource_size(mem_res));
+		itf_hwip->hw_ip->regs[REG_SETA] = ioremap(mem_res->start, resource_size(mem_res));
 		if (!itf_hwip->hw_ip->regs[REG_SETA]) {
 			dev_err(&pdev->dev, "Failed to remap io region\n");
 			return -EINVAL;
@@ -1001,7 +1001,7 @@ int is_hw_get_address(void *itfc_data, void *pdev_data, int hw_id)
 
 		itf_hwip->hw_ip->regs_start[REG_EXT1] = mem_res->start;
 		itf_hwip->hw_ip->regs_end[REG_EXT1] = mem_res->end;
-		itf_hwip->hw_ip->regs[REG_EXT1] = ioremap_nocache(mem_res->start, resource_size(mem_res));
+		itf_hwip->hw_ip->regs[REG_EXT1] = ioremap(mem_res->start, resource_size(mem_res));
 		if (!itf_hwip->hw_ip->regs[REG_EXT1]) {
 			dev_err(&pdev->dev, "Failed to remap io region\n");
 			return -EINVAL;
@@ -1022,7 +1022,7 @@ int is_hw_get_address(void *itfc_data, void *pdev_data, int hw_id)
 
 		itf_hwip->hw_ip->regs_start[REG_EXT2] = mem_res->start;
 		itf_hwip->hw_ip->regs_end[REG_EXT2] = mem_res->end;
-		itf_hwip->hw_ip->regs[REG_EXT2] = ioremap_nocache(mem_res->start, resource_size(mem_res));
+		itf_hwip->hw_ip->regs[REG_EXT2] = ioremap(mem_res->start, resource_size(mem_res));
 		if (!itf_hwip->hw_ip->regs[REG_EXT2]) {
 			dev_err(&pdev->dev, "Failed to remap io region\n");
 			return -EINVAL;
@@ -1058,7 +1058,7 @@ int is_hw_get_address(void *itfc_data, void *pdev_data, int hw_id)
 
 		itf_hwip->hw_ip->regs_start[REG_SETA] = mem_res->start;
 		itf_hwip->hw_ip->regs_end[REG_SETA] = mem_res->end;
-		itf_hwip->hw_ip->regs[REG_SETA] = ioremap_nocache(mem_res->start, resource_size(mem_res));
+		itf_hwip->hw_ip->regs[REG_SETA] = ioremap(mem_res->start, resource_size(mem_res));
 		if (!itf_hwip->hw_ip->regs[REG_SETA]) {
 			dev_err(&pdev->dev, "Failed to remap io region\n");
 			return -EINVAL;
@@ -1075,7 +1075,7 @@ int is_hw_get_address(void *itfc_data, void *pdev_data, int hw_id)
 
 		itf_hwip->hw_ip->regs_start[REG_SETA] = mem_res->start;
 		itf_hwip->hw_ip->regs_end[REG_SETA] = mem_res->end;
-		itf_hwip->hw_ip->regs[REG_SETA] = ioremap_nocache(mem_res->start, resource_size(mem_res));
+		itf_hwip->hw_ip->regs[REG_SETA] = ioremap(mem_res->start, resource_size(mem_res));
 		if (!itf_hwip->hw_ip->regs[REG_SETA]) {
 			dev_err(&pdev->dev, "Failed to remap io region\n");
 			return -EINVAL;
@@ -1559,7 +1559,7 @@ int blk_csis_qactive_control(struct is_device_ischain *device, bool on_off)
 	int i = 0, ret = 0;
 
 	FIMC_BUG(!device);
-	csis_sys_regs = ioremap_nocache(SYSREG_CSIS_BASE_ADDR, 0x1000);
+	csis_sys_regs = ioremap(SYSREG_CSIS_BASE_ADDR, 0x1000);
 
 	csis_val = is_hw_get_reg(csis_sys_regs,
 				&sysreg_csis_regs[SYSREG_R_CSIS_LH_QACTIVE_CON]);
@@ -1583,7 +1583,7 @@ int blk_ipp_mux0_control(struct is_device_ischain *device, u32 value)
 	int ret = 0;
 
 	FIMC_BUG(!device);
-	ipp_sys_regs = ioremap_nocache(SYSREG_IPP_BASE_ADDR, 0x1000);
+	ipp_sys_regs = ioremap(SYSREG_IPP_BASE_ADDR, 0x1000);
 
 	ipp_val = is_hw_get_reg(ipp_sys_regs,
 				&sysreg_ipp_regs[SYSREG_R_IPP_USER_CON1]);
@@ -1605,7 +1605,7 @@ int blk_ipp_mux1_control(struct is_device_ischain *device, u32 value)
 	int ret = 0;
 
 	FIMC_BUG(!device);
-	ipp_sys_regs = ioremap_nocache(SYSREG_IPP_BASE_ADDR, 0x1000);
+	ipp_sys_regs = ioremap(SYSREG_IPP_BASE_ADDR, 0x1000);
 
 	ipp_val = is_hw_get_reg(ipp_sys_regs,
 				&sysreg_ipp_regs[SYSREG_R_IPP_USER_CON1]);
@@ -1627,7 +1627,7 @@ int blk_ipp_qactive_control(struct is_device_ischain *device, bool on_off)
 	int i = 0, ret = 0;
 
 	FIMC_BUG(!device);
-	ipp_sys_regs = ioremap_nocache(SYSREG_IPP_BASE_ADDR, 0x1000);
+	ipp_sys_regs = ioremap(SYSREG_IPP_BASE_ADDR, 0x1000);
 
 	ipp_val = is_hw_get_reg(ipp_sys_regs,
 				&sysreg_ipp_regs[SYSREG_R_IPP_LH_QACTIVE_CON]);
@@ -1652,7 +1652,7 @@ int blk_tnr_lh_control(struct is_device_ischain *device, bool on_off)
 
 	FIMC_BUG(!device);
 
-	tnr_sys_regs = ioremap_nocache(SYSREG_TNR_BASE_ADDR, 0x1000);
+	tnr_sys_regs = ioremap(SYSREG_TNR_BASE_ADDR, 0x1000);
 
 	tnr_val = is_hw_get_reg(tnr_sys_regs,
 				&sysreg_tnr_regs[SYSREG_R_LH_ENABLE]);
@@ -1676,7 +1676,7 @@ int blk_dns_mux_control(struct is_device_ischain *device, u32 value)
 	int ret = 0;
 
 	FIMC_BUG(!device);
-	dns_sys_regs = ioremap_nocache(SYSREG_DNS_BASE_ADDR, 0x1000);
+	dns_sys_regs = ioremap(SYSREG_DNS_BASE_ADDR, 0x1000);
 
 	/* DNS input mux setting */
 	/* DNS0 <- TNR */
@@ -1699,7 +1699,7 @@ int blk_dns_otfenable_control(struct is_device_ischain *device, u32 value)
 	int ret = 0;
 
 	FIMC_BUG(!device);
-	dns_sys_regs = ioremap_nocache(SYSREG_DNS_BASE_ADDR, 0x1000);
+	dns_sys_regs = ioremap(SYSREG_DNS_BASE_ADDR, 0x1000);
 
 	/* DNS otf enable */
 	dns_val = is_hw_get_reg(dns_sys_regs,
@@ -1741,7 +1741,7 @@ int blk_itp_otfenable_control(struct is_device_ischain *device, u32 value)
 	int ret = 0;
 
 	FIMC_BUG(!device);
-	itp_sys_regs = ioremap_nocache(SYSREG_ITP_BASE_ADDR, 0x1000);
+	itp_sys_regs = ioremap(SYSREG_ITP_BASE_ADDR, 0x1000);
 
 	/* Enable OTF */
 	itp_val = is_hw_get_reg(itp_sys_regs,
@@ -1829,12 +1829,12 @@ void is_hw_csi_qchannel_enable_all(bool enable)
 
 	u32 reg_val;
 
-	csi0_regs = ioremap_nocache(CSIS0_QCH_EN_ADDR, SZ_4);
-	csi1_regs = ioremap_nocache(CSIS1_QCH_EN_ADDR, SZ_4);
-	csi2_regs = ioremap_nocache(CSIS2_QCH_EN_ADDR, SZ_4);
-	csi3_regs = ioremap_nocache(CSIS3_QCH_EN_ADDR, SZ_4);
-	csi4_regs = ioremap_nocache(CSIS4_QCH_EN_ADDR, SZ_4);
-	csi5_regs = ioremap_nocache(CSIS5_QCH_EN_ADDR, SZ_4);
+	csi0_regs = ioremap(CSIS0_QCH_EN_ADDR, SZ_4);
+	csi1_regs = ioremap(CSIS1_QCH_EN_ADDR, SZ_4);
+	csi2_regs = ioremap(CSIS2_QCH_EN_ADDR, SZ_4);
+	csi3_regs = ioremap(CSIS3_QCH_EN_ADDR, SZ_4);
+	csi4_regs = ioremap(CSIS4_QCH_EN_ADDR, SZ_4);
+	csi5_regs = ioremap(CSIS5_QCH_EN_ADDR, SZ_4);
 
 	reg_val = readl(csi0_regs);
 	reg_val &= ~(1 << 20);

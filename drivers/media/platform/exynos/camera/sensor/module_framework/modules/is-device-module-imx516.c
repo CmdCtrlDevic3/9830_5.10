@@ -142,10 +142,6 @@ struct is_sensor_ops module_imx516_ops = {
 
 static const struct v4l2_subdev_core_ops core_ops = {
 	.init = sensor_module_init,
-	.g_ctrl = sensor_module_g_ctrl,
-	.s_ctrl = sensor_module_s_ctrl,
-	.g_ext_ctrls = sensor_module_g_ext_ctrls,
-	.s_ext_ctrls = sensor_module_s_ext_ctrls,
 	.ioctl = sensor_module_ioctl,
 	.log_status = sensor_module_log_status,
 };
@@ -153,7 +149,6 @@ static const struct v4l2_subdev_core_ops core_ops = {
 static const struct v4l2_subdev_video_ops video_ops = {
 	.s_routing = sensor_module_imx516_s_routing,
 	.s_stream = sensor_module_s_stream,
-	.s_parm = sensor_module_s_param
 };
 
 static const struct v4l2_subdev_pad_ops pad_ops = {
@@ -409,23 +404,6 @@ static int __init sensor_module_imx516_probe(struct platform_device *pdev)
 	}
 
 	ext->from_con.product_name = FROMDRV_NAME_NOTHING;
-
-	if (pdata->preprocessor_product_name != PREPROCESSOR_NAME_NOTHING) {
-		ext->preprocessor_con.product_name = pdata->preprocessor_product_name;
-		ext->preprocessor_con.peri_info0.valid = true;
-		ext->preprocessor_con.peri_info0.peri_type = SE_SPI;
-		ext->preprocessor_con.peri_info0.peri_setting.spi.channel = pdata->preprocessor_spi_channel;
-		ext->preprocessor_con.peri_info1.valid = true;
-		ext->preprocessor_con.peri_info1.peri_type = SE_I2C;
-		ext->preprocessor_con.peri_info1.peri_setting.i2c.channel = pdata->preprocessor_i2c_ch;
-		ext->preprocessor_con.peri_info1.peri_setting.i2c.slave_address = pdata->preprocessor_i2c_addr;
-		ext->preprocessor_con.peri_info1.peri_setting.i2c.speed = 400000;
-		ext->preprocessor_con.peri_info2.valid = true;
-		ext->preprocessor_con.peri_info2.peri_type = SE_DMA;
-		ext->preprocessor_con.peri_info2.peri_setting.dma.channel = FLITE_ID_D;
-	} else {
-		ext->preprocessor_con.product_name = pdata->preprocessor_product_name;
-	}
 
 	if (pdata->ois_product_name != OIS_NAME_NOTHING) {
 		ext->ois_con.product_name = pdata->ois_product_name;

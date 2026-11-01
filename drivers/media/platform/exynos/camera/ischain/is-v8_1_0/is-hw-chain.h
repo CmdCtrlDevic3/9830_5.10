@@ -363,14 +363,6 @@ enum hwip_interrupt_map {
 	INTR_HWIP_MAX
 };
 
-enum base_reg_index {
-	REG_SETA = 0,
-	REG_SETB = 1,
-	REG_EXT1 = 2,
-	REG_EXT2 = 3,
-	REG_SET_MAX
-};
-
 enum ext_chain_id {
 	ID_ORBMCH_0 = 0,
 	ID_ORBMCH_1 = 1,

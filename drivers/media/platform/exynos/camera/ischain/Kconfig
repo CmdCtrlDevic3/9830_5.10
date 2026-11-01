@@ -1,3 +1,10 @@
+config EXYNOS_PABLO_ISP
+	bool "Use Chain driver"
+	depends on VIDEO_EXYNOS_PABLO_ISP
+	default y
+	help
+	  This config abstracts driver source folder.
+
 config PABLO_V7_0_0
 	bool "Use PABLO v7.0.0"
 	depends on SOC_EXYNOS9820

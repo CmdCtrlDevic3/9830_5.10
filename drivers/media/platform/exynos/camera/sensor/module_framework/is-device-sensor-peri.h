@@ -83,6 +83,9 @@ struct is_cis {
 	/* expected dms */
 	camera2_lens_dm_t		expecting_lens_dm[EXPECT_DM_NUM];
 	camera2_sensor_dm_t		expecting_sensor_dm[EXPECT_DM_NUM];
+#ifdef USE_OIS_HALL_DATA_FOR_VDIS
+	camera2_aa_dm_t			expecting_aa_dm[EXPECT_DM_NUM];
+#endif
 
 	/* expected udm */
 	camera2_lens_udm_t		expecting_lens_udm[EXPECT_DM_NUM];
@@ -114,7 +117,7 @@ struct is_cis {
 
 	/* sensor control delay(N+1 or N+2) */
 	u32				ctrl_delay;
-#ifdef USE_CAMERA_ADAPTIVE_MIPI
+#if defined(USE_CAMERA_ADAPTIVE_MIPI) || defined(USE_CAMERA_MIPI_CLOCK_VARIATION)
 #ifdef USE_CAMERA_MIPI_CLOCK_VARIATION_RUNTIME
 	struct work_struct				mipi_clock_change_work;
 #endif
@@ -207,6 +210,8 @@ struct is_actuator {
 	struct work_struct			actuator_active_off;
 
 	u32				vendor_product_id;
+	u32				vendor_sleep_to_standby_delay;
+	u32				vendor_active_to_standby_delay;
 	u32				vendor_first_pos;
 	u32				vendor_first_delay;
 	u32				vendor_soft_landing_list[VENDOR_SOFT_LANDING_STEP_MAX * 2];
@@ -375,8 +380,11 @@ struct is_laser_af {
 
 	struct is_laser_af_data		laser_af_data;
 	struct is_laser_af_ops		*laser_af_ops;
+	enum camera2_range_sensor_mode	rs_mode;
 
 	struct is_device_sensor_peri	*sensor_peri;
+	struct mutex			*laser_lock;
+	bool				active;
 };
 
 struct paf_action {
@@ -588,6 +596,8 @@ int is_sensor_peri_s_totalgain(struct is_device_sensor *device,
 				struct ae_param dgain);
 int is_sensor_peri_s_wb_gains(struct is_device_sensor *device,
 				struct wb_gains wb_gains);
+int is_sensor_peri_s_test_pattern(struct is_device_sensor *device,
+				camera2_sensor_ctl_t *sensor_ctl);
 int is_sensor_peri_s_sensor_stats(struct is_device_sensor *device,
 				bool streaming,
 				struct is_sensor_ctl *module_ctl,

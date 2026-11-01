@@ -163,6 +163,8 @@ enum itf_vc_sensor_mode {
 	VC_SENSOR_MODE_ULTRA_PD_TAIL,
 	VC_SENSOR_MODE_ULTRA_PD_2_NORMAL,
 	VC_SENSOR_MODE_ULTRA_PD_2_TAIL,
+	VC_SENSOR_MODE_ULTRA_PD_3_NORMAL,
+	VC_SENSOR_MODE_ULTRA_PD_3_TAIL,        // HI847(S20 FE). LLLLL RRRRR RRRRR LLLLL
 
 	/* Super PD */
 	VC_SENSOR_MODE_SUPER_PD_NORMAL = 400,
@@ -250,6 +252,7 @@ typedef struct {
 	enum camera2_wdr_mode pre_wdr_mode;
 	enum camera2_disparity_mode disparity_mode;
 	enum camera2_paf_mode paf_mode;
+	enum aa_scene_mode scene_mode;
 } is_shared_data;
 
 typedef struct {
@@ -369,6 +372,7 @@ typedef struct {
 	unsigned int cur_frame_us_time;
 	unsigned int cur_width;
 	unsigned int cur_height;
+	unsigned int cur_pattern_mode;
 	unsigned int pre_width;
 	unsigned int pre_height;
 
@@ -437,6 +441,11 @@ typedef struct {
 	bool binning; /* If binning is set, sensor should binning for size */
 	bool dual_slave;
 	bool lte_multi_capture_mode;
+	bool highres_capture_mode;
+
+	/* set aeb mode */
+	u32 cur_aeb_mode;
+	u32 pre_aeb_mode;
 
 	u32 cis_rev;
 	u32 cis_model_id;
@@ -530,6 +539,7 @@ struct is_cis_ops {
 	int (*cis_recover_stream_on)(struct v4l2_subdev *subdev);
 	int (*cis_recover_stream_off)(struct v4l2_subdev *subdev);
 	int (*cis_set_laser_control)(struct v4l2_subdev *subdev, u32 onoff);
+	int (*cis_set_laser_mode)(struct v4l2_subdev *subdev, u32 mode);
 	int (*cis_set_factory_control)(struct v4l2_subdev *subdev, u32 command);
 	int (*cis_set_laser_current)(struct v4l2_subdev *subdev, u32 value);
 	int (*cis_get_laser_photo_diode)(struct v4l2_subdev *subdev, u16 *value);
@@ -548,6 +558,8 @@ struct is_cis_ops {
 	int (*cis_set_tone_stat)(struct v4l2_subdev *subdev, struct sensor_imx_3hdr_tone_control tone_control);
 	int (*cis_set_ev_stat)(struct v4l2_subdev *subdev, struct sensor_imx_3hdr_ev_control ev_control);
 	int (*cis_set_totalgain)(struct v4l2_subdev *subdev, struct ae_param *target_exposure, struct ae_param *again, struct ae_param *dgain);
+	int (*cis_set_fake_retention)(struct v4l2_subdev *subdev, bool enable);
+	int (*cis_set_test_pattern)(struct v4l2_subdev *subdev, camera2_sensor_ctl_t *sensor_ctl);
 };
 
 struct is_sensor_ctl
@@ -716,6 +728,11 @@ enum is_aperture_control_step {
 	APERTURE_STEP_MOVING,
 };
 
+enum is_sensor_aeb_mode {
+	SENSOR_AEB_MODE_OFF,
+	SENSOR_AEB_MODE_ON,
+};
+
 typedef int (*actuator_func_type)(struct v4l2_subdev *subdev, u32 *info);
 struct is_actuator_ops {
 	actuator_func_type actuator_init;
@@ -777,9 +794,19 @@ struct is_long_term_expo_mode {
 	u32 frame_interval;
 };
 
+struct is_ois_hall_data {
+	u64 readTimeStamp;
+	u32 counter;
+	int16_t X_AngVel[4];
+	int16_t Y_AngVel[4];
+	int16_t Z_AngVel[4];
+};
+
 /* OIS */
 struct is_ois_ops {
 	int (*ois_init)(struct v4l2_subdev *subdev);
+	int (*ois_init_fac)(struct v4l2_subdev *subdev);
+	void (*ois_init_rear2)(struct is_core *core);
 #if defined (CONFIG_OIS_USE_RUMBA_S6) || defined (CONFIG_CAMERA_USE_MCU) || \
 	defined (CONFIG_CAMERA_USE_INTERNAL_MCU)
 	int (*ois_deinit)(struct v4l2_subdev *subdev);
@@ -826,6 +853,12 @@ struct is_ois_ops {
 	int (*ois_set_af_active)(struct v4l2_subdev *subdev, int enable);
 	int (*ois_set_af_position)(struct v4l2_subdev *subdev, u32 position);
 	void (*ois_get_hall_pos)(struct is_core *core, u16 *targetPos, u16 *hallPos);
+	int (*ois_check_cross_talk)(struct v4l2_subdev *subdev, u16 *hall_data);
+#ifdef USE_OIS_HALL_DATA_FOR_VDIS
+	int (*ois_get_hall_data)(struct v4l2_subdev *subdev, struct is_ois_hall_data *halldata);
+#endif
+	bool(*ois_get_active)(void);
+	int(*ois_read_ext_clock)(struct v4l2_subdev *subdev, u32 *clock);
 };
 
 struct is_sensor_interface;
@@ -1082,6 +1115,7 @@ struct is_cis_ext2_interface_ops {
 				u32 time);
 	int (*set_lte_multi_capture_mode)(struct is_sensor_interface *itf,
 				bool lte_multi_capture_mode);
+	int (*set_aeb_mode)(struct is_sensor_interface *itf, u32 mode);
 	void *reserved[9];
 };
 

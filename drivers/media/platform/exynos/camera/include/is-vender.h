@@ -21,13 +21,21 @@
 #include "exynos-is-sensor.h"
 #include "is-device-csi.h"
 #include "is-device-sensor.h"
-#ifdef USE_CAMERA_ADAPTIVE_MIPI
+#if defined(USE_CAMERA_ADAPTIVE_MIPI) || defined(USE_CAMERA_MIPI_CLOCK_VARIATION)
 #include "is-vendor-mipi.h"
 #endif
 
 #define IS_PATH_LEN 100
 #define VENDER_S_CTRL 0
 #define VENDER_G_CTRL 0
+
+#ifndef EV_LIST_SIZE
+#define EV_LIST_SIZE  24
+#endif
+
+#ifndef MANUAL_LIST_SIZE
+#define MANUAL_LIST_SIZE  5
+#endif
 
 struct is_vender {
 	char fw_path[IS_PATH_LEN];
@@ -100,12 +108,24 @@ struct tof_data_t {
 	u32 width;
 	u32 height;
 	u16 data[TOF_AF_SIZE];
+	int AIFCaptureNum;
+};
+
+struct tof_info_t {
+	u16 TOFExposure;
+	u16 TOFFps;
 };
 
 struct capture_intent_info_t {
 	u16 captureIntent;
 	u16 captureCount;
 	s16 captureEV;
+	u32 captureIso;
+	u16 captureAeExtraMode;
+	char captureMultiEVList[EV_LIST_SIZE];
+	uint32_t captureMultiIsoList[MANUAL_LIST_SIZE];
+	uint32_t CaptureMultiExposureList[MANUAL_LIST_SIZE];
+	u16 captureAeMode;
 };
 
 #define TOF_CAL_SIZE_MAX 10
@@ -184,6 +204,7 @@ void is_vender_check_retention(struct is_vender *vender, void *module_data);
 #endif
 void is_vender_itf_open(struct is_vender *vender, struct sensor_open_extended *ext_info);
 int is_vender_set_torch(struct camera2_shot *shot);
+void is_vender_update_meta(struct is_vender *vender, struct camera2_shot *shot);
 int is_vender_video_s_ctrl(struct v4l2_control *ctrl, void *device_data);
 int is_vender_ssx_video_s_ctrl(struct v4l2_control *ctrl, void *device_data);
 int is_vender_ssx_video_g_ctrl(struct v4l2_control *ctrl, void *device_data);
@@ -218,5 +239,8 @@ int is_vendor_update_mipi_info(struct is_device_sensor *device);
 #ifdef USE_TOF_AF
 void is_vender_store_af(struct is_vender *vender, struct tof_data_t *data);
 #endif
+void is_vendor_store_tof_info(struct is_vender *vender, struct tof_info_t *info);
+int is_vendor_shaking_gpio_on(struct is_vender *vender);
+int is_vendor_shaking_gpio_off(struct is_vender *vender);
 #endif
 

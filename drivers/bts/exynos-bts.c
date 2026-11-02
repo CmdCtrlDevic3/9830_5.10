@@ -216,6 +216,40 @@ int bts_update_bw(unsigned int index, struct bts_bw bw)
 }
 EXPORT_SYMBOL(bts_update_bw);
 
+void bts_calc_disable(unsigned int en)
+{
+	/* 0: enable, 1: disable */
+	spin_lock(&btsdev->lock);
+	if (en) {
+		btsdev->calc_dis_cnt++;
+		if (btsdev->calc_dis_cnt > 1) {
+			spin_unlock(&btsdev->lock);
+			return;
+		}
+	} else {
+		btsdev->calc_dis_cnt--;
+		if (btsdev->calc_dis_cnt > 0) {
+			spin_unlock(&btsdev->lock);
+			return;
+		} else if (btsdev->calc_dis_cnt < 0) {
+			dev_warn(btsdev->dev, "calc_dis_cnt is below 0!\n");
+			btsdev->calc_dis_cnt = 0;
+			spin_unlock(&btsdev->lock);
+			return;
+		}
+	}
+	spin_unlock(&btsdev->lock);
+
+	if (en) {
+		pm_qos_update_request(&exynos_mif_qos, 0);
+		pm_qos_update_request(&exynos_int_qos, 0);
+	} else {
+		bts_calc_bw();
+	}
+	dev_info(btsdev->dev, "bts_calc_bw function: %s\n", en ? "disabled" : "enabled");
+}
+EXPORT_SYMBOL(bts_calc_disable);
+
 int bts_add_scenario(unsigned int index)
 {
 	struct bts_scen *scen = btsdev->scen_list;
@@ -2528,6 +2562,7 @@ static int bts_probe(struct platform_device *pdev)
 		return -ENOMEM;
 
 	btsdev->dev = &pdev->dev;
+	btsdev->calc_dis_cnt = 0;
 
 	qos_va_base1 = devm_ioremap(btsdev->dev, G3D01_QOS_BASE, SZ_1K);
 	qos_va_base2 = devm_ioremap(btsdev->dev, G3D23_QOS_BASE, SZ_1K);

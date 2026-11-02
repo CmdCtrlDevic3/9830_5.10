@@ -7,3 +7,7 @@ obj-$(CONFIG_EXYNOS_BTS)        += exynos-bts.o
 ifdef CONFIG_SOC_S5E3830
 obj-$(CONFIG_EXYNOS_BTS)        += exynos-btsops3830.o
 endif
+
+ifdef CONFIG_SOC_EXYNOS9830
+obj-$(CONFIG_EXYNOS_BTS)        += exynos-btsops9830.o
+endif

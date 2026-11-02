@@ -3917,19 +3917,6 @@ static void dw_mci_cmdq_dump_vendor_regs(struct mmc_host *mmc)
 
 }
 
-#if IS_ENABLED(CONFIG_MMC_DW_DEBUG)
-static void dw_mci_cmdq_cmd_log(struct mmc_host *mmc, bool new_cmd,
-						struct cmdq_log_ctx *log_ctx)
-{
-
-}
-
-static int dw_mci_cmdq_core_reset(struct mmc_host *mmc)
-{
-	return 0;
-}
-#endif
-
 #ifdef CONFIG_MMC_DW_EXYNOS_FMP
 static int dw_mci_cmdq_crypto_engine_cfg(struct mmc_host *mmc, void *desc,
 					struct mmc_data *data, int page_index, bool cmdq_enabled)

@@ -152,6 +152,21 @@ enum is_scenario_is {
 	IS_SCENARIO_PRO_VIDEO = 9,
 };
 
+#define IS_DVFS_SCENARIO_COMMON_MODE_SHIFT 0
+#define IS_DVFS_SCENARIO_COMMON_MODE_MASK 0x3
+#define IS_DVFS_SCENARIO_VENDOR_SHIFT 16
+#define IS_DVFS_SCENARIO_VENDOR_MASK 0xffff
+
+enum is_dvfs_scenario_common_mode {
+	IS_DVFS_SCENARIO_COMMON_MODE_PHOTO = 1,
+	IS_DVFS_SCENARIO_COMMON_MODE_VIDEO = 2,
+};
+
+enum is_dvfs_scenario_vendor {
+    IS_DVFS_SCENARIO_VENDOR_VT = 1,
+    IS_DVFS_SCENARIO_VENDOR_SSM = 2,
+};
+
 /*
  *controls/dynamic metadata
  */

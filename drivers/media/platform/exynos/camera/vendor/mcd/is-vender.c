@@ -1445,7 +1445,7 @@ int is_vender_hw_init(struct is_vender *vender)
 	return 0;
 }
 
-int is_vender_fw_prepare(struct is_vender *vender)
+int is_vender_fw_prepare(struct is_vender *vender, u32 position)
 {
 	int ret = 0;
 	int rom_id;
@@ -1457,7 +1457,7 @@ int is_vender_fw_prepare(struct is_vender *vender)
 	specific = vender->private_data;
 	core = container_of(vender, struct is_core, vender);;
 
-	rom_id = is_vendor_get_rom_id_from_position(core->current_position);
+	rom_id = is_vendor_get_rom_id_from_position(position);
 
 	if (rom_id != ROM_ID_REAR) {
 		ret = is_sec_run_fw_sel(ROM_ID_REAR);
@@ -1978,9 +1978,9 @@ void is_vender_check_retention(struct is_vender *vender, void *module_data)
 
 void is_vender_sensor_s_input(struct is_vender *vender, void *module)
 {
-	is_vender_fw_prepare(vender);
+	struct is_module_enum *sensor_module = module;
 
-	return;
+	is_vender_fw_prepare(vender, sensor_module->position);
 }
 
 void is_vender_itf_open(struct is_vender *vender, struct sensor_open_extended *ext_info)
@@ -2358,7 +2358,7 @@ static noinline_for_stack long __get_file_size(struct file *file)
 	struct kstat st;
 	u32 request_mask = (STATX_MODE | STATX_SIZE);
 
-	if (vfs_getattr(&file->f_path, &st, request_mask, KSTAT_QUERY_FLAGS))
+	if (vfs_getattr(&file->f_path, &st, request_mask, 0))
 		return -1;
 	if (!S_ISREG(st.mode))
 		return -1;

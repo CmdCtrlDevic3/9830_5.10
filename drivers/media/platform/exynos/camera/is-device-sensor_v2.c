@@ -111,6 +111,47 @@ int is_search_sensor_module_with_position(struct is_device_sensor *device,
 
 	module_enum = device->module_enum;
 	*module = NULL;
+
+#if IS_ENABLED(CONFIG_VENDER_MCD)
+	switch (position) {
+	case SENSOR_POSITION_REAR:
+		sensor_id = priv->rear_sensor_id;
+		break;
+	case SENSOR_POSITION_FRONT:
+		sensor_id = priv->front_sensor_id;
+		break;
+	case SENSOR_POSITION_REAR2:
+		sensor_id = priv->rear2_sensor_id;
+		break;
+	case SENSOR_POSITION_FRONT2:
+		sensor_id = priv->front2_sensor_id;
+		break;
+	case SENSOR_POSITION_REAR3:
+		sensor_id = priv->rear3_sensor_id;
+		break;
+	case SENSOR_POSITION_REAR4:
+		sensor_id = priv->rear4_sensor_id;
+		break;
+#ifdef CONFIG_SECURE_CAMERA_USE
+	case SENSOR_POSITION_SECURE:
+		sensor_id = priv->secure_sensor_id;
+		break;
+#endif
+	case SENSOR_POSITION_REAR_TOF:
+		sensor_id = priv->rear_tof_sensor_id;
+		break;
+	case SENSOR_POSITION_FRONT_TOF:
+		sensor_id = priv->front_tof_sensor_id;
+		break;
+	case SENSOR_POSITION_VIRTUAL:
+		sensor_id = SENSOR_NAME_VIRTUAL;
+		break;
+	default:
+		merr("invalid module position(%d)", device, position);
+		ret = -EINVAL;
+		goto p_err;
+	}
+#else
 	if (position < SENSOR_POSITION_MAX) {
 		/* physical sensor position */
 		sensor_id = priv->sensor_id[position];
@@ -136,6 +177,7 @@ int is_search_sensor_module_with_position(struct is_device_sensor *device,
 			goto p_err;
 		}
 	}
+#endif
 
 	mmax = atomic_read(&device->module_count);
 	for (mindex = 0; mindex < mmax; mindex++) {
@@ -1369,7 +1411,7 @@ static int is_sensor_notify_by_dma_end(struct is_device_sensor *device, void *ar
 	struct is_device_sensor_peri *sensor_peri = NULL;
 	struct is_cis *cis = NULL;
 	u32 hashkey;
-	u16 frame_id;
+	u16 frame_id = 0;
 #endif
 
 	FIMC_BUG(!device);
@@ -2111,6 +2153,32 @@ int is_sensor_runtime_module_sel(struct is_device_sensor *device,
 		goto p_err;
 	}
 
+#if IS_ENABLED(CONFIG_VENDER_MCD)
+	switch (position) {
+	case SENSOR_POSITION_REAR:
+		priv->rear_sensor_id = ctrl.value;
+		break;
+	case SENSOR_POSITION_FRONT:
+		priv->front_sensor_id = ctrl.value;
+		break;
+	case SENSOR_POSITION_REAR2:
+		priv->rear2_sensor_id = ctrl.value;
+		break;
+	case SENSOR_POSITION_FRONT2:
+		priv->front2_sensor_id = ctrl.value;
+		break;
+	case SENSOR_POSITION_REAR3:
+		priv->rear3_sensor_id = ctrl.value;
+		break;
+	case SENSOR_POSITION_REAR4:
+		priv->rear4_sensor_id = ctrl.value;
+		break;
+	default:
+		merr("invalid module position(%d)", device, position);
+		ret = -EINVAL;
+		goto p_err;
+	}
+#else
 	if (position < SENSOR_POSITION_MAX) {
 		priv->sensor_id[position] = ctrl.value;
 	} else {
@@ -2118,6 +2186,7 @@ int is_sensor_runtime_module_sel(struct is_device_sensor *device,
 		ret = -EINVAL;
 		goto p_err;
 	}
+#endif
 
 	set_bit(IS_SENSOR_RUNTIME_MODULE_SELECTED, &device->state);
 
@@ -2142,6 +2211,31 @@ static int is_sensor_i2c_dummy_module_set(struct is_device_sensor *device, struc
 
 	module = &device->module_enum[0];
 
+#if IS_ENABLED(CONFIG_VENDER_MCD)
+	switch (position) {
+	case SENSOR_POSITION_REAR:
+		priv->rear_sensor_id = module->sensor_id;
+		break;
+	case SENSOR_POSITION_FRONT:
+		priv->front_sensor_id = module->sensor_id;
+		break;
+	case SENSOR_POSITION_REAR2:
+		priv->rear2_sensor_id = module->sensor_id;
+		break;
+	case SENSOR_POSITION_FRONT2:
+		priv->front2_sensor_id = module->sensor_id;
+		break;
+	case SENSOR_POSITION_REAR3:
+		priv->rear3_sensor_id = module->sensor_id;
+		break;
+	case SENSOR_POSITION_REAR4:
+		priv->rear4_sensor_id = module->sensor_id;
+		break;
+	default:
+		merr("invalid module position(%d)", device, position);
+		return -EINVAL;
+	}
+#else
 	switch (position) {
 	case SENSOR_POSITION_REAR:
 	case SENSOR_POSITION_FRONT:
@@ -2155,6 +2249,7 @@ static int is_sensor_i2c_dummy_module_set(struct is_device_sensor *device, struc
 		merr("invalid module position(%d)", device, position);
 		return -EINVAL;
 	}
+#endif
 
 	set_bit(IS_SENSOR_I2C_DUMMY_MODULE_SELECTED, &device->state);
 	minfo("%s, sensor_id: %d\n", device, __func__, module->sensor_id);
@@ -2224,6 +2319,46 @@ int is_sensor_s_input(struct is_device_sensor *device,
 		}
 	}
 
+#if IS_ENABLED(CONFIG_VENDER_MCD)
+	switch (input) {
+	case SENSOR_POSITION_REAR:
+		sensor_id = priv->rear_sensor_id;
+		break;
+	case SENSOR_POSITION_FRONT:
+		sensor_id = priv->front_sensor_id;
+		break;
+	case SENSOR_POSITION_REAR2:
+		sensor_id = priv->rear2_sensor_id;
+		break;
+	case SENSOR_POSITION_FRONT2:
+		sensor_id = priv->front2_sensor_id;
+		break;
+	case SENSOR_POSITION_REAR3:
+		sensor_id = priv->rear3_sensor_id;
+		break;
+	case SENSOR_POSITION_REAR4:
+		sensor_id = priv->rear4_sensor_id;
+		break;
+#ifdef CONFIG_SECURE_CAMERA_USE
+	case SENSOR_POSITION_SECURE:
+		sensor_id = priv->secure_sensor_id;
+		break;
+#endif
+	case SENSOR_POSITION_REAR_TOF:
+		sensor_id = priv->rear_tof_sensor_id;
+		break;
+	case SENSOR_POSITION_FRONT_TOF:
+		sensor_id = priv->front_tof_sensor_id;
+		break;
+	case SENSOR_POSITION_VIRTUAL:
+		sensor_id = SENSOR_NAME_VIRTUAL;
+		break;
+	default:
+		merr("invalid module position(%d)", device, input);
+		ret = -EINVAL;
+		goto p_err;
+	}
+#else
 	if (input < SENSOR_POSITION_MAX) {
 		/* physical sensor position */
 		sensor_id = priv->sensor_id[input];
@@ -2249,6 +2384,7 @@ int is_sensor_s_input(struct is_device_sensor *device,
 			goto p_err;
 		}
 	}
+#endif
 
 	module_count = atomic_read(&device->module_count);
 	for (sensor_index = 0; sensor_index < module_count; sensor_index++) {

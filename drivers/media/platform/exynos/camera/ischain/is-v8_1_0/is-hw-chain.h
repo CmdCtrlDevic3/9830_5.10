@@ -349,6 +349,8 @@ enum taaisp_chain_id {
 	ID_DCP	 = 6,	/* not used */
 	ID_3AA_2 = 7,	/* DMA/3AA2 */
 	ID_CLH_0 = 8,	/* CLAHE */
+	ID_3AA_3 = 9,	/* not used */
+	ID_YPP   = 10,	/* not used */
 	ID_3AAISP_MAX
 };
 

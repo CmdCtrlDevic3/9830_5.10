@@ -235,6 +235,8 @@
 /* #define ENABLE_PDP_STAT_DMA */
 
 #define USE_PDP_LINE_INTR_FOR_PDAF	1
+#define USE_DEBUG_PD_DUMP	0
+#define DEBUG_PD_DUMP_CH	0  /* set a bit corresponding to each channel */
 
 #define FAST_FDAE
 #undef RESERVED_MEM_IN_DT

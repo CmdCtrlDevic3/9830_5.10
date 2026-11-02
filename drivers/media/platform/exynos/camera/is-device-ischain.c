@@ -3096,6 +3096,44 @@ static int is_ischain_init_wrap(struct is_device_ischain *device,
 			}
 
 			priv = core->vender.private_data;
+
+#if IS_ENABLED(CONFIG_VENDER_MCD)
+			switch (module_id) {
+			case SENSOR_POSITION_REAR:
+				sensor_id = priv->rear_sensor_id;
+				break;
+			case SENSOR_POSITION_FRONT:
+				sensor_id = priv->front_sensor_id;
+				break;
+			case SENSOR_POSITION_REAR2:
+				sensor_id = priv->rear2_sensor_id;
+				break;
+			case SENSOR_POSITION_FRONT2:
+				sensor_id = priv->front2_sensor_id;
+				break;
+			case SENSOR_POSITION_REAR3:
+				sensor_id = priv->rear3_sensor_id;
+				break;
+			case SENSOR_POSITION_REAR4:
+				sensor_id = priv->rear4_sensor_id;
+				break;
+			case SENSOR_POSITION_REAR_TOF:
+				sensor_id = priv->rear_tof_sensor_id;
+				break;
+			case SENSOR_POSITION_FRONT_TOF:
+				sensor_id = priv->front_tof_sensor_id;
+				break;
+#ifdef CONFIG_SECURE_CAMERA_USE
+			case SENSOR_POSITION_SECURE:
+				sensor_id = priv->secure_sensor_id;
+				break;
+#endif
+			default:
+				merr("invalid module position(%d)", device, module->position);
+				ret = -EINVAL;
+				goto p_err;
+			}
+#else
 			if (module_id < SENSOR_POSITION_MAX) {
 				/* physical sensor postion */
 				sensor_id = priv->sensor_id[module_id];
@@ -3118,6 +3156,7 @@ static int is_ischain_init_wrap(struct is_device_ischain *device,
 					goto p_err;
 				}
 			}
+#endif
 
 			if (module->sensor_id == sensor_id) {
 				device->sensor = sensor;
@@ -4237,6 +4276,9 @@ const struct is_queue_ops is_ischain_isp_ops = {
 int is_ischain_ypp_open(struct is_device_ischain *device,
 	struct is_video_ctx *vctx)
 {
+#if defined(CONFIG_PABLO_V8_1_0)
+	return -EOPNOTSUPP;
+#else
 	int ret = 0;
 	int ret_err = 0;
 	u32 group_id;
@@ -4276,6 +4318,7 @@ err_ischain_open:
 		merr("is_group_close is fail(%d)", device, ret_err);
 err_group_open:
 	return ret;
+#endif
 }
 
 int is_ischain_ypp_close(struct is_device_ischain *device,

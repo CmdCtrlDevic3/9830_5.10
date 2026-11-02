@@ -1268,7 +1268,9 @@ int is_groupmgr_init(struct is_groupmgr *groupmgr,
 			case GROUP_ID_PAF1:
 			case GROUP_ID_PAF2:
 			case GROUP_ID_CLH0:
-			case GROUP_ID_YPP:
+#if !defined(CONFIG_PABLO_V8_1_0)
+ 			case GROUP_ID_YPP:
+#endif
 			case GROUP_ID_3AA0:
 				if (((video->id >= IS_VIDEO_31S_NUM) &&
 					(video->id <= IS_VIDEO_31P_NUM)) ||

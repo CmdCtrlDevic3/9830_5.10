@@ -2213,7 +2213,7 @@ static int pdp_probe(struct platform_device *pdev)
 	pdp->regs_start = res->start;
 	pdp->regs_end = res->end;
 
-	pdp->base = devm_ioremap_nocache(dev, res->start, resource_size(res));
+	pdp->base = devm_ioremap(dev, res->start, resource_size(res));
 	if (!pdp->base) {
 		dev_err(dev, "ioremap failed\n");
 		ret = -ENOMEM;

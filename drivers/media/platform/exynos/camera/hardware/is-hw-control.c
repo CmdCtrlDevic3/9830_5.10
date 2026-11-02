@@ -26,7 +26,9 @@
 #include "is-hw-dm.h"
 #include "is-hw-clahe.h"
 #include "is-hw-yuvpp.h"
+#ifdef SOC_LME
 #include "is-hw-lme.h"
+#endif
 #include "is-work.h"
 
 #define INTERNAL_SHOT_EXIST	(1)

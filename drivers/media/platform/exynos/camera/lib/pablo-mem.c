@@ -35,6 +35,7 @@
 #endif
 #if IS_ENABLED(CONFIG_ION)
 #include <linux/ion.h>
+#include <linux/ion_exynos.h>
 #endif
 #include <linux/kmemleak.h>
 #include <linux/swiotlb.h>
@@ -984,7 +985,7 @@ static void pablo_mem_sync(struct is_priv_buf *pbuf, off_t offset, size_t size,
 	size_t actual_size;
 
 	struct device dummy_dev;
-	dma_addr_t *paddr;
+	dma_addr_t paddr;
 
 	if (!pbuf->kva)
 		return;
@@ -1005,7 +1006,7 @@ static void pablo_mem_sync(struct is_priv_buf *pbuf, off_t offset, size_t size,
 
 	if (secure) {
 		device_initialize(&dummy_dev);
-		paddr = (dma_addr_t *)sg_phys(pbuf->sgt->sgl);
+		paddr = sg_phys(pbuf->sgt->sgl);
 	}
 
 	for_each_sg(pbuf->sgt->sgl, sg, pbuf->sgt->orig_nents, i) {
@@ -1162,7 +1163,7 @@ static struct is_priv_buf *is_ion_alloc(void *ctx,
 
 	size = PAGE_ALIGN(size);
 
-	heapmask = (flags & ION_EXYNOS_FLAG_PROTECTED) ? alloc_ctx->heapmask_s : alloc_ctx->heapmask;
+	heapmask = (flags & ION_FLAG_PROTECTED) ? alloc_ctx->heapmask_s : alloc_ctx->heapmask;
 	buf->dma_buf = ion_alloc(size, heapmask, flags ? flags : alloc_ctx->flags);
 	if (IS_ERR(buf->dma_buf)) {
 		ret = -ENOMEM;

@@ -451,31 +451,51 @@ bool is_sec_check_hifi_tunningfile_crc32(char *buf)
 void remove_dump_fw_file(void)
 {
 	mm_segment_t old_fs;
-//	int old_mask;
 	long ret;
 	char fw_path[100];
 	struct is_rom_info *finfo = NULL;
+	struct file *fp;
+	struct inode *parent_inode;
 
 	old_fs = get_fs();
 	set_fs(KERNEL_DS);
-
-//	old_mask = sys_umask(0);
 
 	is_sec_get_sysfs_finfo(&finfo, ROM_ID_REAR);
 
 	/* RTA binary */
 	snprintf(fw_path, sizeof(fw_path), "%s%s", IS_FW_DUMP_PATH, finfo->load_rta_fw_name);
 
-	ret = ksys_unlink(fw_path);
+	fp = filp_open(fw_path, O_RDONLY, 0);
+
+	if (!IS_ERR(fp)) {
+		parent_inode= fp->f_path.dentry->d_parent->d_inode;
+		inode_lock(parent_inode);
+		ret = vfs_unlink(parent_inode, fp->f_path.dentry, NULL);
+		inode_unlock(parent_inode);
+		filp_close(fp, NULL); 
+	} else {
+		ret = -ENOENT;
+	}
+
 	info("sys_unlink (%s) %ld", fw_path, ret);
 
 	/* DDK binary */
 	snprintf(fw_path, sizeof(fw_path), "%s%s", IS_FW_DUMP_PATH, finfo->load_fw_name);
 
-	ret = ksys_unlink(fw_path);
+	fp = filp_open(fw_path, O_RDONLY, 0);
+
+	if (!IS_ERR(fp)) {
+		parent_inode= fp->f_path.dentry->d_parent->d_inode;
+		inode_lock(parent_inode);
+		ret = vfs_unlink(parent_inode, fp->f_path.dentry, NULL);
+		inode_unlock(parent_inode);
+		filp_close(fp, NULL); 
+	} else {
+		ret = -ENOENT;
+	}
+
 	info("sys_unlink (%s) %ld", fw_path, ret);
 
-//	sys_umask(old_mask);
 	set_fs(old_fs);
 
 	is_dumped_fw_loading_needed = false;
@@ -485,46 +505,37 @@ ssize_t write_data_to_file(char *name, char *buf, size_t count, loff_t *pos)
 {
 	ssize_t tx = -ENOENT;
 	struct file *fp;
-	mm_segment_t old_fs;
-	int fd;
-//	int old_mask;
-
-	old_fs = get_fs();
-	set_fs(KERNEL_DS);
-
-//	old_mask = sys_umask(0);
 
 	if (force_caldata_dump) {
-		ksys_rmdir(name);
-		fd = ksys_open(name, O_WRONLY | O_CREAT | O_TRUNC | O_SYNC, 0666);
+		fp = filp_open(name, O_RDONLY, 0);
+
+		if (IS_ERR(fp)) {
+			fp = filp_open(name, O_WRONLY | O_CREAT | O_TRUNC | O_SYNC, 0666);
+		} else {
+			struct inode *parent_inode= fp->f_path.dentry->d_parent->d_inode;
+			inode_lock(parent_inode);
+			vfs_rmdir(parent_inode, fp->f_path.dentry);
+			inode_unlock(parent_inode);
+			filp_close(fp, NULL); 
+			fp = filp_open(name, O_WRONLY | O_CREAT | O_TRUNC | O_SYNC, 0666);
+		}
 	} else {
-		fd = ksys_open(name, O_WRONLY | O_CREAT | O_TRUNC | O_SYNC, 0664);
+		fp = filp_open(name, O_WRONLY | O_CREAT | O_TRUNC | O_SYNC, 0664);
 	}
-	if (fd < 0) {
+
+	if (IS_ERR(fp)) {
 		err("open file error: %s", name);
-		//sys_umask(old_mask);
-		set_fs(old_fs);
 		return -EINVAL;
 	}
 
-	fp = fget(fd);
-	if (fp) {
-		tx = vfs_write(fp, buf, count, pos);
-		if (tx != count) {
-			err("fail to write %s. ret %zd", name, tx);
-			tx = -ENOENT;
-		}
-
-		vfs_fsync(fp, 0);
-		fput(fp);
-	} else {
-		err("fail to get file *: %s", name);
+	tx = kernel_write(fp, buf, count, pos);
+	if (tx != count) {
+		err("fail to write %s. ret %zd", name, tx);
+		tx = -ENOENT;
 	}
+	vfs_fsync(fp, 0);
 
-	ksys_close(fd);
-//	sys_umask(old_mask);
-	set_fs(old_fs);
-
+	filp_close(fp, NULL);
 	return tx;
 }
 
@@ -562,20 +573,20 @@ ssize_t read_data_rom_file(char *name, char *buf, size_t count, loff_t *pos)
 
 bool is_sec_file_exist(char *name)
 {
+	struct file *fp;
 	mm_segment_t old_fs;
 	bool exist = true;
-	int ret;
 
 	old_fs = get_fs();
 	set_fs(KERNEL_DS);
 
-	ret = ksys_access(name, 0);
-	if (ret) {
+	fp = filp_open(name, O_RDONLY, 0);
+
+	if (IS_ERR(fp)) {
 		exist = false;
-		if (-ENOENT == ret)
-			info("%s: file(%s) not exist!\n", __func__, name);
-		else
-			info("%s: error %d, failed to access %s\n", __func__, ret, name);
+		info("%s: error %d, failed to open %s\n", __func__, PTR_ERR(fp), name);
+	} else {
+		filp_close(fp, NULL);
 	}
 
 	set_fs(old_fs);
@@ -633,7 +644,7 @@ int is_sec_ldo_enable(struct device *dev, char *name, bool on)
 
 	if (on) {
 		if (regulator_is_enabled(regulator)) {
-			pr_warning("%s: regulator is already enabled\n", name);
+			pr_warn("%s: regulator is already enabled\n", name);
 			goto exit;
 		}
 
@@ -644,7 +655,7 @@ int is_sec_ldo_enable(struct device *dev, char *name, bool on)
 		}
 	} else {
 		if (!regulator_is_enabled(regulator)) {
-			pr_warning("%s: regulator is already disabled\n", name);
+			pr_warn("%s: regulator is already disabled\n", name);
 			goto exit;
 		}
 

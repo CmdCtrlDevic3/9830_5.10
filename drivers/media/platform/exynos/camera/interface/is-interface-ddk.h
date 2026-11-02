@@ -319,6 +319,7 @@ struct ypp_param_set {
 #endif
 };
 
+#if !defined(CONFIG_PABLO_V8_1_0)
 struct lme_param_set {
 	struct param_lme_dma		dma;
 
@@ -332,6 +333,7 @@ struct lme_param_set {
 	struct param_stripe_input	stripe_input;
 #endif
 };
+#endif
 
 struct lib_callback_result {
 	u32	fcount;
